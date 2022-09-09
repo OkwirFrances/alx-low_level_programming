@@ -6,3 +6,4 @@ Prints either greater than 5, is less than 6, or is 0
 5-print_numbers.c prints all single digit numbers of base 10 starting from 0.
 6-print_numberz.c prints all single digit numbers of base 10 starting from 0
 7-print_tebahpla.c prints the lowercase alphabet in reverse
+8-print_base16.c prints all the numbers of base 16 in lowercase,
