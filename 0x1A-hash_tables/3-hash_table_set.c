@@ -1,42 +1,65 @@
 #include "hash_tables.h"
 
 /**
- * hash_table_set - adds a element
- * @ht:the hash table
- * @key: the key
- * @value: the value of the element
- * Return: 1 in success 0 in fail
+ * add_n_hash - adds a node at the beginning of a hash at a given index
+ *
+ * @head: head of the hash linked list
+ * @key: key of the hash
+ * @value: value to store
+ * Return: head of the hash
+ */
+hash_node_t *add_n_hash(hash_node_t **head, const char *key, const char *value)
+{
+	hash_node_t *tmp;
+
+	tmp = *head;
+
+	while (tmp != NULL)
+	{
+		if (strcmp(key, tmp->key) == 0)
+		{
+			free(tmp->value);
+			tmp->value = strdup(value);
+			return (*head);
+		}
+		tmp = tmp->next;
+	}
+
+	tmp = malloc(sizeof(hash_node_t));
+
+	if (tmp == NULL)
+		return (NULL);
+
+	tmp->key = strdup(key);
+	tmp->value = strdup(value);
+	tmp->next = *head;
+	*head = tmp;
+
+	return (*head);
+}
+
+/**
+ * hash_table_set - adds a hash (key, value) to a given hash table
+ *
+ * @ht: pointer to the hash table
+ * @key: key of the hash
+ * @value: value to store
+ * Return: 1 if successes, 0 if fails
  */
 int hash_table_set(hash_table_t *ht, const char *key, const char *value)
 {
+	unsigned long int k_index;
 
-	hash_node_t *actual, *element;
-	unsigned long int i;
+	if (ht == NULL)
+		return (0);
 
-	if (ht == NULL || key == NULL || value == NULL)
+	if (key == NULL || *key == '\0')
 		return (0);
-	i = key_index((const unsigned char *)key, ht->size);
-	actual = ht->array[i];
-	while (actual)
-	{
-		if (strcmp(actual->key, key) == 0)
-		{
-			free(actual->value);
-			actual->value = strdup(value);
-			if (actual->value == NULL)
-				return (0);
-			return (1);
-		}
-		actual = actual->next;
-	}
-	element = malloc(sizeof(hash_node_t));
-	if (element == NULL)
+
+	k_index = key_index((unsigned char *)key, ht->size);
+
+	if (add_n_hash(&(ht->array[k_index]), key, value) == NULL)
 		return (0);
-	element->key = strdup(key);
-	element->value = strdup(value);
-	if (element->key == NULL  || element->value == NULL)
-		return (0);
-	element->next = ht->array[i];
-	ht->array[i] = element;
+
 	return (1);
 }
